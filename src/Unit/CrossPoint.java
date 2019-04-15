@@ -4,6 +4,7 @@ public class CrossPoint{
 
   Line P;
   Line Q;
+  public double s,t;
 
 
 
@@ -16,8 +17,9 @@ public class CrossPoint{
 
   public void ask_for_st(int A)
   {
-    double s,t;
-    
+    s={(Q.p.x-Q.q.y)*(Q.p.x-P.p.x)+(Q.q.x-Q.p.x)*(Q.p.y-P.p.y)}/A;
+    t={(P.p.y-P.q.y)*(Q.p.x-P.p.x)+(P.q.x-P.p.x)*(Q.p.y-P.p.y)}/A;
+
 
   }
 
