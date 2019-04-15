@@ -2,10 +2,27 @@ import classes.*;
 
 public class CrossPoint{
 
-  Vector P;
-  Vevtor Q;
+  Line P;
+  Line Q;
 
-  public double jugje_cross(double s, double t){
+
+
+  public void ask_for_a(Line P,Line Q)
+  {
+   int A;
+    A=(P.q.x-P.p.x)*(Q.p.y-Q.q.y)+(Q.q.x-Q.p.x)*(P.q.y-P.p.y)
+   ask_for_st(A);
+  }
+
+  public void ask_for_st(int A)
+  {
+    double s,t;
+    
+
+  }
+
+
+  public double judje_cross(double s, double t){
       if(0<=s && s<=1){
         if((0<=t && t<=1){
           point_x_calc(s,x_p,x_q);
