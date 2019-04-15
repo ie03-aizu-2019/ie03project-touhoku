@@ -2,10 +2,10 @@ package classes;
 import classes.*;
 
 public class Line {
-    Vector P;
-    Vector Q;
+    Vec P;
+    Vec Q;
 
-    public Line (Vector P, Vector Q) {
+    public Line (Vec P, Vec Q) {
         this.P = P;
         this.Q = Q;
     }
