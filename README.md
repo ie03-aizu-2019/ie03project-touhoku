@@ -1,4 +1,8 @@
 README
 
 * 実行の仕方
-` javac /src/Main.java `
+1. ` cd ./src `
+
+2. ` javac Main.java `
+
+3. ` java Main < InputData`

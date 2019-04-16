@@ -1,9 +1,9 @@
 package classes;
 
-public class Vector {
+public class Vec {
     double X;
     double Y;
-    public Vector (double X, double Y) {
+    public Vec (double X, double Y) {
         this.X = X;
         this.Y = Y;
     }
