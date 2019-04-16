@@ -2,11 +2,11 @@ package classes;
 import classes.*;
 
 public class Line {
-    Vec P;
-    Vec Q;
+    public Vec P1;
+    public Vec P2;
 
-    public Line (Vec P, Vec Q) {
-        this.P = P;
-        this.Q = Q;
+    public Line (Vec P1, Vec P2) {
+        this.P1 = P1;
+        this.P2 = P2;
     }
 }

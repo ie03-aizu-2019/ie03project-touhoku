@@ -1,47 +1,50 @@
+package Unit;
 import classes.*;
 
 public class CrossPoint{
 
-  Line P;
-  Line Q;
+  public Line line1;
+  public Line line2;
   public double s,t;
 
+  public Vec CrossingVec;
 
 
-  public void ask_for_a(Line P,Line Q)
-  {
-   int A;
-    A=(P.q.x-P.p.x)*(Q.p.y-Q.q.y)+(Q.Q.x-Q.p.x)*(P.Q.y-P.p.y);
-   ask_for_st(A);
+  public CrossPoint (Line line1, Line line2) {
+    this.line1 = line1;
+    this.line2 = line2;
   }
 
-  public void ask_for_st(int A)
+  public void Ask_for_a()
   {
-    s=((Q.p.x-Q.q.y)*(Q.p.x-P.p.x)+(Q.q.x-Q.p.x)*(Q.p.y-P.p.y))/A;
-    t=((P.p.y-P.q.y)*(Q.p.x-P.p.x)+(P.q.x-P.p.x)*(Q.p.y-P.p.y))/A;
+   double A;
+    A=(line1.P2.x-line1.P1.x)*(line2.P1.y-line2.P2.y)+(line2.P2.x-line2.P1.x)*(line1.P2.y-line1.P1.y);
+    Ask_for_st(A);
+  }
 
-
+  public void Ask_for_st(double A)
+  {
+    s=((line2.P1.y-line2.P2.y)*(line2.P1.x-line1.P1.x)+(line2.P2.x-line2.P1.x)*(line2.P1.y-line1.P1.y))/A;
+    t=((line1.P1.y-line1.P2.y)*(line2.P1.x-line1.P1.x)+(line1.P2.x-line1.P1.x)*(line2.P1.y-line1.P1.y))/A;
   }
 
 
-  public double judje_cross(double s, double t){
+  public boolean Judje_cross(){
+    //exception
+    if (CrossingVec.Eq(CrossingVec, line1.P1) || CrossingVec.Eq(CrossingVec, line1.P2) 
+    || CrossingVec.Eq(CrossingVec, line2.P1) || CrossingVec.Eq(CrossingVec, line2.P2)) {
+      return false;
+    }
+
       if(0<=s && s<=1){
         if(0<=t && t<=1){
-          point_x_calc(s,P.p.x,P.q.x);
-          point_y_calc(s,P.p.y,P.q.y);
+          return true;
         }
-        else return -1;
       }
-      else return -1;
+      return false;
   }
 
-  public double point_x_calc(double s, double x_p, double x_q){
-      return x_p+(x_q-x_p)*s;
+  public void Point_calc(){
+      CrossingVec = new Vec(line1.P1.x+(line1.P2.x-line1.P1.x)*s,line1.P1.y+(line1.P2.y-line1.P1.y)*s);
   }
-
-  public double point_y_calc(double s, double y_p, double y_q){
-      return y_p+(y_q-y-p)*s;
-  }
-
-
 }
