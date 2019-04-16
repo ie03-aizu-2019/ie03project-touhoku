@@ -11,7 +11,7 @@ public class CrossPoint{
   public void ask_for_a(Line P,Line Q)
   {
    int A;
-    A=(P.q.x-P.p.x)*(Q.p.y-Q.q.y)+(Q.q.x-Q.p.x)*(P.q.y-P.p.y)
+    A=(P.q.x-P.p.x)*(Q.p.y-Q.q.y)+(Q.Q.x-Q.p.x)*(P.Q.y-P.p.y);
    ask_for_st(A);
   }
 
@@ -27,8 +27,8 @@ public class CrossPoint{
   public double judje_cross(double s, double t){
       if(0<=s && s<=1){
         if((0<=t && t<=1){
-          point_x_calc(s,x_p,x_q);
-          point_y_calc(s,y_p,y_q);
+          point_x_calc(s,P.p.x,P.q.x);
+          point_y_calc(s,P.p.y,P.q.y);
         }
         else return -1;
       }
