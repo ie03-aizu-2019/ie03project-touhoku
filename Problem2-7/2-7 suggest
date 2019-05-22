@@ -1,0 +1,39 @@
+2-7
+点と直線の距離をそれぞれ計算
+各点を繋いだ直線の式を保存する配列？またはクラスが必要
+直線に繋ぐのではなく元々存在する点に繋げる場合
+
+必要物
+二点を繋いだ線分(道)の関数を保存出来るもの
+点と直線の距離を求める関数
+
+公式
+1.点と直線の距離
+A(x0,y0)と直線 l:ax+by+c=0の距離をdとする
+d=|ax0+by0+c|/(/root(a^2+b^2));
+
+2.点と点の距離
+A(a,b) B(c,d)とする
+AB=/root((c-a)^2+(d-b)^2);
+
+関数
+double measure_road_dis(double a,double b,double c,double x0,double y0)
+{
+  double d;
+  d=abs(a*x0+b*y0+c)/(sqrt(a*a+b*b));
+  return d;
+}
+//既に存在している地点の座標を(x,y)追加する地点を(a,b)とする
+double measure_point_dis(double x,double y,double a,double b)
+{
+ double d;
+ d=sqrt((x-a)*(x-a)+(y-b)*(y-b));
+return d;
+}
+
+アルゴリズム案
+1.各々の道の式を保存
+2.基準となる点と各々の道を計算して保存
+3.基準点と各々の点の距離を計算して保存
+4.最短距離を新たな道としてその関数を求め交わる道(点)との交点を求める
+5.交差地点を出力
