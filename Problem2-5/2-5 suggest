@@ -1,0 +1,18 @@
+2-5 点と直線の距離をそれぞれ計算
+各点を繋いだ直線の式を保存する配列？またはクラスが必要
+直線に繋ぐのではなく元々存在する点に繋げる場合?
+必要物
+二点を繋いだ線分(道)の関数を保存出来るもの
+点と直線の距離を求める関数
+A(x0,y0)と直線 l:ax+by+c=0の距離 d
+公式
+d=|ax0+by0+c|/(/root(a^2+b^2));
+
+double measure_d(double a,double b,double c,double x0,double y0)
+{
+  double d;
+  d=abs(a*x0+b*y0+c)/(sqrt(a*a+b*b));
+  return d;
+
+
+}
