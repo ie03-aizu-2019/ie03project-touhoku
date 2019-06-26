@@ -39,28 +39,13 @@ public class LineWay {
     	System.out.printf("%s", points.size());
     }
     public void Sort () {
-    	for (var i=0;i < distance.size()-1;i++) {
-    		for (var j=distance.size()-1;j>i;j--) {
-    			if (distance.get(j) < distance.get(j-1)) {
-    				var tPoint = new Vector<Integer>(points.get(j));
-    				var tCrossPoint = new Vector<Integer>(crossPoints.get(j));
-    				var tDis = distance.get(j);
-    				points.set(j, points.get(j-1));
-    				crossPoints.set(j, crossPoints.get(j-1));
-    				distance.set(j, distance.get(j-1));
-    				points.set(j-1, tPoint);
-    				crossPoints.set(j-1, tCrossPoint);
-    				distance.set(j-1, tDis);
+    	for (var i =0;i<distance.size();i++) {
+    		for (var n=0;n<distance.size();n++) {
+    			if (i!=n && Double.compare(distance.get(i), distance.get(n))==0) {
+    				points.remove(n);
+    				crossPoints.remove(n);
+    				distance.remove(n);
     			}
-    		}
-    	}
-    	while (true) {
-    		if (distance.get(0) < 0) {
-    			distance.remove(0);
-    			points.remove(0);
-    			crossPoints.remove(0);
-    		}else {
-    			break;
     		}
     	}
     }

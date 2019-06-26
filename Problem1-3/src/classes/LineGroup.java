@@ -35,7 +35,10 @@ public class LineGroup {
         lineWay = new LineWay();
     }
 
-    public LineWay WalkLine(int startPointId,int endPointId) {
+    public LineWay WalkLine(int startPointId,int endPointId,int depth) {
+    	if (depth > 3) {
+    		return null;
+    	}
     	if (walk_nextPoint == null) {
     		walk_walkedPoint.add(startPointId);
     		walk_walkedCrossPoint.add(-1);
@@ -48,6 +51,10 @@ public class LineGroup {
     			walk_walkedPoint.add(-1);
     			walk_walkedCrossPoint.add(IdByCrossPointVec(walk_nextPoint));
     		}
+    	}
+
+    	if (walk_walkedPoint.size() == 2 && walk_walkedPoint.get(0) == 4 && walk_walkedPoint.get(1) == 5) {
+    		System.out.print("");
     	}
 
     	//check finish point
@@ -88,13 +95,13 @@ public class LineGroup {
     		if (lines.get(i).P1 == walk_nextPoint) {
     			if (CheckWalked(lines.get(i).Id_P2,-1)) {
     				walk_nextPoint = lines.get(i).P2;
-    				WalkLineBranch(startPointId, endPointId);
+    				WalkLineBranch(startPointId, endPointId,depth+1);
     			}
     		}
     		if (lines.get(i).P2 == walk_nextPoint) {
     			if (CheckWalked(lines.get(i).Id_P1,-1)) {
     				walk_nextPoint = lines.get(i).P1;
-    				WalkLineBranch(startPointId, endPointId);
+    				WalkLineBranch(startPointId, endPointId,depth+1);
     			}
     		}
     	}
@@ -102,44 +109,48 @@ public class LineGroup {
     		if (crossPoints.get(i).line1.P1 == walk_nextPoint || crossPoints.get(i).line1.P2 == walk_nextPoint || crossPoints.get(i).line2.P1 == walk_nextPoint || crossPoints.get(i).line2.P2 == walk_nextPoint) {
     			if (CheckWalked(-1,i)) {
     				walk_nextPoint = crossPoints.get(i).CrossingVec;
-    				WalkLineBranch(startPointId, endPointId);}
+    				WalkLineBranch(startPointId, endPointId,depth+1);
+    			}
     		}
 
 
 
     		if (walk_nextPoint == crossPoints.get(i).CrossingVec) {
-    			if (walk_walkedPoint.size() == 2) {
-    				System.out.print("aa");
-    			}
+    			//to point
     			if (CheckWalked(crossPoints.get(i).line1.Id_P1,-1)) {
     				walk_nextPoint = crossPoints.get(i).line1.P1;
-    				WalkLineBranch(startPointId, endPointId);
+    				WalkLineBranch(startPointId, endPointId,depth+1);
     			}
     			if (CheckWalked(crossPoints.get(i).line1.Id_P2,-1)) {
     				walk_nextPoint = crossPoints.get(i).line1.P2;
-    				WalkLineBranch(startPointId, endPointId);
+    				WalkLineBranch(startPointId, endPointId,depth+1);
     			}
     			if (CheckWalked(crossPoints.get(i).line2.Id_P1,-1)) {
     				walk_nextPoint = crossPoints.get(i).line2.P1;
-    				WalkLineBranch(startPointId, endPointId);
+    				WalkLineBranch(startPointId, endPointId,depth+1);
     				}
     			if (CheckWalked(crossPoints.get(i).line2.Id_P2,-1)) {
     				walk_nextPoint = crossPoints.get(i).line2.P2;
-    				WalkLineBranch(startPointId, endPointId);
+    				WalkLineBranch(startPointId, endPointId,depth+1);
     			}
+
+    			//to cross point
+
 
     		}
     	}
     	return lineWay;
     }
 
-    private void WalkLineBranch (int startPointId, int endPointId) {
+    private void WalkLineBranch (int startPointId, int endPointId,int depth) {
     	var branchClass = new LineGroup(this.lines,this.crossPoints,this.walk_nextPoint, this.walk_canGo, this.walk_walkedPoint, this.walk_walkedCrossPoint);
-		var branchReturn = branchClass.WalkLine(startPointId, endPointId);
+		var branchReturn = branchClass.WalkLine(startPointId, endPointId, depth+1);
+		if (branchReturn != null)  {
 		for(var n=0;n<branchReturn.points.size();n++) {
 			lineWay.points.add(branchReturn.points.get(n));
 			lineWay.crossPoints.add(branchReturn.crossPoints.get(n));
 			lineWay.distance.add(branchReturn.distance.get(n));
+		}
 		}
     }
 

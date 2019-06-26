@@ -50,7 +50,8 @@ public class Main {
         var lineGroup = new LineGroup(lines,crossPoints);
 
         //System.out.printf("%d (%f,%f)!!", lines.get(1).Id_P1,lines.get(1).P1.x,lines.get(1).P1.y);
-        var walkLine = lineGroup.WalkLine(4, 5);
+        var walkLine = lineGroup.WalkLine(4, 5,0);
+        walkLine.Sort();
         var minDis = 1000.0;
         var minId = -1;
         for (var i=0;i<walkLine.distance.size();i++) {
