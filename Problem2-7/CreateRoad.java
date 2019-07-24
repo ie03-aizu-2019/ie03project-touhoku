@@ -16,12 +16,22 @@ class Point{
     this.y=y;
   }
 }
+class CrossPoint{
+  double x;
+  double y;
+  public CrossPoint(double x,double y){
+    this.x=x;
+    this.y=y;
+  }
+}
 
 class Line{
   Point P1;
   Point P2;
-  double a;
+  double a; //y=ax+b;
   double b;
+  double min;
+  int tag;
   public Line(Point P1,Point P2){
     this.P1=P1;
     this.P2=P2;
@@ -34,49 +44,113 @@ class Line{
 public class CreateRoad{
   public static void main(String args[]){
 
-//元から存在する道をつなぐ点をP1,P2とする、
-//A,Bを入れた時どう繋げるか考える
-    NewPoint A= new NewPoint(5,1);
-    NewPoint B= new NewPoint(11,5);
-    Point P1=new Point(0,0);
-    Point P2=new Point(2,5);
-    Line L1=new Line(P1,P2);
-    double distance=0;
-    method_road(L1);
-    road_dis(L1,A,distance);
-    point_dis(P1,A,distance);
+    NewPoint[] newpoints = {
+          new NewPoint(3,5),
+          new NewPoint(2,6),
+        };
+        //既存の点(テスト用に点と道を作成)
+   Point[] points={
+          new Point(5,1),
+          new Point(11,5),
+          new Point(2,3),
+          new Point(4,9),
+        };
 
-}
+
+   Line[] lines=new Line[6];
+    int i;
+    int k=0; //配列の代入よう
+    int j;
+    int tmp=0;//どの線が選ばれたかわかる
+    double min=0;
+
+
+    for(i=0;i<=3;i++){
+      for(j=i+1;j<=3;j++){
+        lines[k]=new Line(points[i],points[j]);
+        method_road(lines[k]);//道の関数まで調べてる
+        k++;
+        }
+      }//全パターンの道の作成
+      //交差点以外の距離計測
+    for(i=0;i<newpoints.length;i++){
+      for(j=0;j<lines.length;j++){
+        if(min==0) min=dis(lines[j],newpoints[i]);
+        lines[j].min=dis(lines[j],newpoints[i]);
+        if(min>lines[j].min){
+          min=lines[j].min;
+          tmp=j;
+        }
+      }
+      /*
+      System.out.println(tmp);
+      System.out.println(lines[tmp].tag);//タグ番号でどこと繋いだか識別　0..新点と道　1...新点とP1 2...新点とP2
+      System.out.println(lines[tmp].a+""+lines[tmp].b);
+      */
+      //tag=0　つまり点と直線で結ぶ場合、道を作るのに交差地点の座標が必要
+
+      if(lines[tmp].tag==0){
+        double r_a,r_b;//法線のa,b
+        double cx,cy;//交差地点検出ターイム
+         r_a=-1/lines[tmp].a;
+         System.out.println(r_a);
+         r_b=newpoints[i].y-(r_a*newpoints[i].x);
+         System.out.println(r_b);
+         //法線と元の式を使って道をつなぐ交点をだす
+         cx=(r_b-lines[tmp].b)/(lines[tmp].a-r_a);
+         cy=lines[tmp].a*cx+lines[tmp].b;
+         System.out.println(cx+"   "+cy);
+         //あとはcx,cyを端点で道作る
+      }
+    }
+  }
 
 //まず道の関数を求める(テスト用)
+
+
+
 public static void method_road(Line L1){
-  double a,b;
   L1.a=(L1.P2.y-L1.P1.y)/(L1.P2.x-L1.P1.x);
   L1.b=L1.P2.y-(L1.P2.x*L1.a);
-  System.out.println(L1.a+" "+L1.b);
-  System.out.println("y="+L1.a+"x+"+L1.b);
+//  System.out.println(String.format("%.2f",L1.a)+" "+String.format("%.2f",L1.b));
+  //System.out.println("y="+String.format("%.2f",L1.a)+"x+"+String.format("%.2f",L1.b));
 
 }
 
 
-//点と直線の距離
+//点と直線の距離 ついでに　点と点の距離
 
-public static void road_dis(Line L1,NewPoint A,double distance){
-  double dis;
- dis=Math.abs((L1.a*A.x-A.y+L1.b)/Math.sqrt(L1.a*L1.a+1));
- System.out.println(dis);
- if(distance==0) distance = dis;
- else{
-   if(distance<dis) distance = dis;
- }
-}
-//点と点の距離
+public static double dis(Line L1,NewPoint A){
+  double dis_road,dis_p1,dis_p2;
+  dis_road=Math.abs((L1.a*A.x-A.y+L1.b)/Math.sqrt(L1.a*L1.a+1));
+  //System.out.println(dis_road);
+  dis_p1=Math.sqrt((L1.P1.x-A.x)*(L1.P1.x-A.x)+(L1.P1.y-A.y)*(L1.P1.y-A.y));
+  //System.out.println(dis_p1);
+  dis_p2=Math.sqrt((L1.P2.x-A.x)*(L1.P2.x-A.x)+(L1.P2.y-A.y)*(L1.P2.y-A.y));
+  //System.out.println(dis_p2);
+  return min(L1,dis_road,dis_p1,dis_p2);
 
-public static void point_dis(Point P1,NewPoint A,double distance){
-  double dis;
-  dis=Math.sqrt((P1.x-A.x)*(P1.x-A.x)+(P1.y-A.y)*(P1.y-A.y));
-  System.out.println(dis);
-}
+  }
 
+  public static double min(Line L1,double a,double b,double c){
+   double min;
+   int tag;
+   min=0;
+   if(a>b)
+   {
+     min=b;
+     L1.tag=1;
+   }
+   else{
+      min=a;
+      L1.tag=0;
+    }
+   if(min>c){
+     min=c;
+     L1.tag=2;
+   }
+   //System.out.println(min);
+   return min;
+  }
 
 }
