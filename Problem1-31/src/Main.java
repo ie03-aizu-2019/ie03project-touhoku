@@ -1,13 +1,7 @@
+import classes.*;
+import Unit.*;
 import java.util.Scanner;
 import java.util.Vector;
-
-import classes.CrossPoint;
-import classes.CrossPointGroup;
-import classes.Dijkstra;
-import classes.Line;
-import classes.Point;
-import classes.PointType;
-import classes.PointType.e_PointType;
 
 public class Main{
     public static void main(String[] args) {
@@ -16,12 +10,12 @@ public class Main{
         var lineNum = scanner.nextInt();
         var P = scanner.nextFloat();
         var q = scanner.nextFloat();
-
-        var points = new Vector<Point>();
+        
+        var points = new Vector<Vec>();
         for (var n=0;n<pointNum;n++) {
             var x = scanner.nextFloat();
             var y = scanner.nextFloat();
-            points.add(new Point(x,y,n));
+            points.add(new Vec(x,y));
         }
 
         var lines = new Vector<Line>();
@@ -37,26 +31,15 @@ public class Main{
                 crossPoints.add(new CrossPoint(lines.get(n),lines.get(i)));
             }
         }
-
+        
+        
         for (var n=0;n<crossPoints.size();n++) {
             crossPoints.get(n).Ask_for_a();
             crossPoints.get(n).Point_calc();
-        }
-        for (int n=0;n<crossPoints.size();) {
-        	if (!crossPoints.get(n).Judje_cross()) {
-        		crossPoints.remove(n);
-        	}else {
-        		n++;
-        	}
-        }
-        var crossPointGroup = new CrossPointGroup(crossPoints);
-        crossPointGroup.Sort();
-        crossPointGroup.AddMovableCrossPoint();
-
-        var dij = new Dijkstra(new PointType(0,e_PointType.Point), new PointType(0,e_PointType.Point), points, lines,crossPoints);
-
-
-
+            if (crossPoints.get(n).Judje_cross()) {
+                System.out.printf("%f,%f\n", crossPoints.get(n).CrossingVec.x,crossPoints.get(n).CrossingVec.y);
+            }
+        }   
 
         scanner.close();
     }
