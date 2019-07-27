@@ -2,7 +2,7 @@ package classes;
 
 import java.util.Vector;
 
-import classes.PointType.e_PointType;
+import classes.PointInfo.e_PointType;
 
 public class CrossPointGroup {
 	public Vector<CrossPoint> cp;
@@ -11,16 +11,16 @@ public class CrossPointGroup {
 		this.cp = getCP;
 
 		for (int n=0;n<getCP.size();n++) {
-			getCP.get(n).id = new PointType(n,e_PointType.CrossPoint);
+			getCP.get(n).pointInfo = new PointInfo(n,e_PointType.CrossPoint);
 		}
 	}
 
 	public void Sort() {
 		for (int i = 0; i < cp.size() - 1; i++) {
 			for (int j = cp.size() - 1; j > i; j--) {
-				if ((cp.get(j - 1).CrossingVec.x > cp.get(j).CrossingVec.x)
-						|| (cp.get(j - 1).CrossingVec.x == cp.get(j).CrossingVec.x &&
-								cp.get(j - 1).CrossingVec.y > cp.get(j).CrossingVec.y)) {
+				if ((cp.get(j - 1).xyVec.x > cp.get(j).xyVec.x)
+						|| (cp.get(j - 1).xyVec.x == cp.get(j).xyVec.x &&
+								cp.get(j - 1).xyVec.y > cp.get(j).xyVec.y)) {
 					var tmp = cp.get(j - 1);
 					cp.set(j - 1, cp.get(j));
 					cp.set(j, tmp);

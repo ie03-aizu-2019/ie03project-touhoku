@@ -1,6 +1,6 @@
 package classes;
 
-public class PointType {
+public class PointInfo {
 	public enum e_PointType{
 		Point,CrossPoint,
 	}
@@ -8,7 +8,7 @@ public class PointType {
 	int Id;
 	e_PointType type;
 
-	public PointType(int getId, e_PointType getType) {
+	public PointInfo(int getId, e_PointType getType) {
 		this.Id = getId;
 		this.type = getType;
 	}
