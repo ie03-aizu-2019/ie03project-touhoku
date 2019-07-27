@@ -6,8 +6,6 @@ import classes.CrossPointGroup;
 import classes.Dijkstra;
 import classes.Line;
 import classes.Point;
-import classes.PointInfo;
-import classes.PointInfo.e_PointType;
 
 public class Main {
 	public static void main(String[] args) {
@@ -51,8 +49,8 @@ public class Main {
 		}
 
 		//Cross PointをLineに入れ込む
-		for (int n = 0; n < crossPoints.size();n++) {
-			for (int l=0;l<lines.size();l++) {
+		for (int n = 0; n < crossPoints.size(); n++) {
+			for (int l = 0; l < lines.size(); l++) {
 				if (crossPoints.get(n).line1 == lines.get(l)) {
 					lines.get(l).crossPoints.add(crossPoints.get(n));
 				}
@@ -62,17 +60,13 @@ public class Main {
 			}
 		}
 
-		for (int n = 0; n < crossPoints.size();n++) {
-			System.out.printf("CrossPoint %d %f %f\n", n, crossPoints.get(n).xyVec.x,
-					crossPoints.get(n).xyVec.y);
-		}
-
 		var crossPointGroup = new CrossPointGroup(crossPoints);
 		crossPointGroup.Sort();
 		crossPointGroup.AddMovableCrossPoint();
 
-		var dij = new Dijkstra(new PointInfo(0, e_PointType.Point), new PointInfo(0, e_PointType.Point), points, lines,
+		var dij = new Dijkstra(crossPoints.get(0), crossPoints.get(2), points, lines,
 				crossPoints);
+
 
 		scanner.close();
 	}

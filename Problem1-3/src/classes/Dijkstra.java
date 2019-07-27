@@ -7,15 +7,15 @@ import classes.PointInfo.e_PointType;
 public class Dijkstra {
 	Vector<DijkstraNode> nodes;
 	Vector<Double> resultMatrix;
-	double[][] D;
+	Dijkstra_Search[] D;
 	Vector<Line> lines;
 	Vector<Point> points;
 	Vector<CrossPoint> cPoints;
-	PointInfo startPoint, goalPoint;
+	Point startPoint, goalPoint;
 
-	public Dijkstra(PointInfo startPoint, PointInfo goalPoint, Vector<Point> points, Vector<Line> lines,
+	public Dijkstra(Point startPoint, Point goalPoint, Vector<Point> points, Vector<Line> lines,
 			Vector<CrossPoint> cPoints) {
-		D = new double[points.size() + cPoints.size()][points.size() + cPoints.size()];
+		D = new Dijkstra_Search[points.size() + cPoints.size()];
 		nodes = new Vector<DijkstraNode>();
 		resultMatrix = new Vector<Double>();
 		this.lines = lines;
@@ -25,88 +25,77 @@ public class Dijkstra {
 		this.goalPoint = goalPoint;
 
 		//create D
-		for (int y = 0; y < points.size() + cPoints.size(); y++) {
-			for (int x = 0; x < points.size() + cPoints.size(); x++) {
-				D[y][x] = Double.MAX_VALUE;
-			}
+		for (int x = 0; x < points.size() + cPoints.size(); x++) {
+			D[x] = new Dijkstra_Search();
 		}
-		//resultMatrix.add(Double.MAX_VALUE);
 
-		//set 0. in start point
-		int startIndex = startPoint.type == e_PointType.Point ? startPoint.Id : points.size() + startPoint.Id;
-		D[startIndex][startIndex] = 0.;
-		//done node
 		var searchedNode = new Vector<Dijkstra_Search>();
-		var startPath = new Vector<PointInfo>();
-		startPath.add(startPoint);
-		searchedNode.add(new Dijkstra_Search(startPoint, 0, startPath, null));
+		var startNode = D[getPointArrayIndex(startPoint.pointInfo.type,startPoint.pointInfo.Id)] = new Dijkstra_Search(startPoint, 0, null);
+		searchedNode.add(startNode);
 
-		//debug
-		var debugPoint = cPoints.get(2);
-		var getMovablePoint = MovablePoint(debugPoint);
-		for (int n = 0; n < getMovablePoint.size(); n++) {
-			System.out.printf("from %s ",
-					debugPoint.pointInfo.type == e_PointType.Point ? "Point " : "CrossPoint");
-			System.out.printf("%d ", debugPoint.pointInfo.Id);
-			System.out.printf("to %s ",
-					getMovablePoint.get(n).pointInfo.type == e_PointType.Point ? "Point " : "CrossPoint");
-			System.out.printf("%d\n", getMovablePoint.get(n).pointInfo.Id);
-		}
+		Dijkstra_Search nextNode = startNode;
+		while (true) {
+			if (nextNode == null) {
+				break;
+			}
+			var getMovablePoint = MovablePoint(nextNode.location);
 
-		/*while (searchedNode.size() <= 2) {
-			for (int i = 0; i < searchedNode.size(); i++) {
-				var getMovablePoint = MovablePoint(searchedNode.get(i).location);
-				for (int n = 0; n < getMovablePoint.size(); n++) {
+			for (int n = 0; n < getMovablePoint.size(); n++) {
 
-					System.out.printf("from %s ",
-							searchedNode.get(i).location.type == e_PointType.Point ? "Point " : "CrossPoint");
-					System.out.printf("%d ", searchedNode.get(i).location.Id);
-					System.out.printf("to %s ",
-							getMovablePoint.get(n).type == e_PointType.Point ? "Point " : "CrossPoint");
-					System.out.printf("%d\n", getMovablePoint.get(n).Id);
+				/*
+				System.out.printf("from %s ",
+						nextNode.location.pointInfo.type == e_PointType.Point ? "Point " : "CrossPoint");
+				System.out.printf("%d ", nextNode.location.pointInfo.Id);
+				System.out.printf("to %s ",
+						getMovablePoint.get(n).pointInfo.type == e_PointType.Point ? "Point " : "CrossPoint");
+				System.out.printf("%d\n", getMovablePoint.get(n).pointInfo.Id);
 
-					int setedIndex = getPointArrayIndex(searchedNode.get(i).location.type,
-							searchedNode.get(i).location.Id);
-					int setIndex = getPointArrayIndex(getMovablePoint.get(n).type, getMovablePoint.get(n).Id);
-					PointInfo getPointInfo = getMovablePoint.get(n);
-					Vec setVec;
-					Vec setedVec;
+				*/
 
-					// setedVec -> setVec
-					if (searchedNode.get(i).location.type == e_PointType.Point) {
-						setedVec = points.get(searchedNode.get(i).location.Id);
-					} else {
-						setedVec = cPoints.get(searchedNode.get(i).location.Id).CrossingVec;
-					}
-					if (getMovablePoint.get(n).type == e_PointType.Point) {
-						setVec = points.get(getMovablePoint.get(n).Id);
-					} else {
-						setVec = cPoints.get(getMovablePoint.get(n).Id).CrossingVec;
-					}
+				int setIndex = getPointArrayIndex(getMovablePoint.get(n).pointInfo.type, getMovablePoint.get(n).pointInfo.Id);
+				Point getPointInfo = getMovablePoint.get(n);
+				Vec setVec;
+				Vec setedVec;
 
-					var tmpCal = Math.pow(Math.pow(setVec.x - setedVec.x, 2) + Math.pow(setVec.y - setedVec.y, 2), 0.5);
-
-					if (setIndex < setedIndex) {
-						int tmp = setIndex;
-						setIndex = setedIndex;
-						setedIndex = tmp;
-					}
-
-					if (D[setedIndex][setIndex] > searchedNode.get(i).totalCost + tmpCal) {
-						D[setedIndex][setIndex] = searchedNode.get(i).totalCost + tmpCal;
-
-						//new node
-						Dijkstra_Search newNode = new Dijkstra_Search(getMovablePoint.get(n),
-								searchedNode.get(i).totalCost + tmpCal, searchedNode.get(i).path,
-								getMovablePoint.get(n));
-						searchedNode.add(newNode);
-					}
+				// setedVec -> setVec
+				if (nextNode.location.pointInfo.type == e_PointType.Point) {
+					setedVec = points.get(nextNode.location.pointInfo.Id).xyVec;
+				} else {
+					setedVec = cPoints.get(nextNode.location.pointInfo.Id).xyVec;
 				}
-				PrintD();
-				System.out.printf("\n\n");
+				if (getMovablePoint.get(n).pointInfo.type == e_PointType.Point) {
+					setVec = points.get(getMovablePoint.get(n).pointInfo.Id).xyVec;
+				} else {
+					setVec = cPoints.get(getMovablePoint.get(n).pointInfo.Id).xyVec;
+				}
+
+				var tmpCal = Math.pow(Math.pow(setVec.x - setedVec.x, 2) + Math.pow(setVec.y - setedVec.y, 2), 0.5);
+
+				if (D[setIndex].totalCost > nextNode.totalCost + tmpCal) {
+					D[setIndex] = new Dijkstra_Search(getMovablePoint.get(n), nextNode.totalCost + tmpCal, nextNode.path);
+				}
 			}
 
-		}*/
+			//PrintD();
+			//System.out.printf("\n\n");
+
+			nextNode = ConfirmNode(searchedNode);
+			System.out.printf("");
+		}
+
+		var result = D[getPointArrayIndex(goalPoint.pointInfo.type,goalPoint.pointInfo.Id)];
+		for (int i=0;i<result.path.size();i++) {
+			if (result.path.get(i).pointInfo.type == e_PointType.Point) {
+				System.out.printf("Point ");
+			}else {
+				System.out.printf("Cross Point ");
+			}
+			System.out.printf("%d ", result.path.get(i).pointInfo.Id);
+			if (i < result.path.size()-1) {
+				System.out.printf(" -> ");
+			}
+		}
+		System.out.printf("\ntotal cost %f\n",result.totalCost);
 	}
 
 	Vector<Point> MovablePoint(Point getPoint) {
@@ -189,19 +178,15 @@ public class Dijkstra {
 	}
 
 	void PrintD() {
-		for (int y = 0; y < points.size() + cPoints.size(); y++) {
-			for (int x = 0; x < points.size() + cPoints.size(); x++) {
-				double getData = D[y][x];
-				if (y >= x) {
-					System.out.printf("---- ");
-				} else if (getData == Double.MAX_VALUE) {
-					System.out.printf("INFY ");
-				} else {
-					System.out.printf("%04.1f ", getData);
-				}
+		for (int x = 0; x < points.size() + cPoints.size(); x++) {
+			double getData = D[x].totalCost;
+			if (Math.abs(getData - Double.MAX_VALUE) < 0.000001) {
+				System.out.printf("INFY ");
+			} else {
+				System.out.printf("%04.1f ", getData);
 			}
-			System.out.printf("\n");
 		}
+		System.out.printf("\n");
 	}
 
 	//同じ線上のCross Pointを getPosi から遠い方を消す
@@ -236,6 +221,48 @@ public class Dijkstra {
 		return getCPoint;
 	}
 
+	// Searched Node には無い最小コストを検出
+	Dijkstra_Search NextSearch(Vector<Dijkstra_Search> getSearchedNode) {
+		double min_distance = Double.MAX_VALUE;
+		Dijkstra_Search min_node = null;
+		for (int x = 0; x < points.size() + cPoints.size(); x++) {
+			if (min_distance > D[x].totalCost) {
+				var existed = false;
+				for (int i = 0; i < getSearchedNode.size(); i++) {
+					if (D[x] == getSearchedNode.get(i)) {
+						existed = true;
+					}
+				}
+				if (existed == false) {
+					min_node = D[x];
+					min_distance = D[x].totalCost;
+				}
+			}
+		}
+		return min_node;
+	}
+
+	Dijkstra_Search ConfirmNode(Vector<Dijkstra_Search> getSearchedNode) {
+		double min_distance = Double.MAX_VALUE;
+		Dijkstra_Search min_node = null;
+		for (int x = 0; x < points.size() + cPoints.size(); x++) {
+			if (min_distance > D[x].totalCost) {
+				var existed = false;
+				for (int i = 0; i < getSearchedNode.size(); i++) {
+					if (D[x].location.pointInfo == getSearchedNode.get(i).location.pointInfo) {
+						existed = true;
+					}
+				}
+				if (existed == false) {
+					min_node = D[x];
+					min_distance = D[x].totalCost;
+				}
+			}
+		}
+		getSearchedNode.add(min_node);
+		return min_node;
+	}
+
 	//CrossPoint用にD配列をオフセットする
 	int getPointArrayIndex(e_PointType getType, int index) {
 		if (getType == e_PointType.Point) {
@@ -248,15 +275,29 @@ public class Dijkstra {
 
 class Dijkstra_Search {
 	double totalCost;
-	PointInfo location;
+	Point location;
 	Vector<Point> path;
 
-	public Dijkstra_Search(PointInfo getLocation, double getCost, Vector<PointInfo> getPath, Point newPath) {
+	public Dijkstra_Search() {
+		this.location = null;
+		this.totalCost = Double.MAX_VALUE;
+		this.path = new Vector<Point>();
+	}
+
+	public Dijkstra_Search(Dijkstra_Search copy) {
+		this.location = copy.location;
+		this.totalCost = copy.totalCost;
+		this.path = new Vector<Point>(copy.path);
+	}
+
+	public Dijkstra_Search(Point getLocation, double getCost, Vector<Point> getPath) {
 		this.location = getLocation;
 		this.totalCost = getCost;
-		this.path = (Vector<Point>) getPath.clone();
-		if (newPath != null) {
-			this.path.add(newPath);
+		if (getPath == null) {
+			this.path = new Vector<Point>();
+		} else {
+			this.path = (Vector<Point>) getPath.clone();
 		}
+		this.path.add(getLocation);
 	}
 }
