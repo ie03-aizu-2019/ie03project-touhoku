@@ -80,22 +80,17 @@ public class Dijkstra {
 			//System.out.printf("\n\n");
 
 			nextNode = ConfirmNode(searchedNode);
-			System.out.printf("");
 		}
+	}
 
+	public Vector<Point> GetPath () {
 		var result = D[getPointArrayIndex(goalPoint.pointInfo.type,goalPoint.pointInfo.Id)];
-		for (int i=0;i<result.path.size();i++) {
-			if (result.path.get(i).pointInfo.type == e_PointType.Point) {
-				System.out.printf("Point ");
-			}else {
-				System.out.printf("Cross Point ");
-			}
-			System.out.printf("%d ", result.path.get(i).pointInfo.Id);
-			if (i < result.path.size()-1) {
-				System.out.printf(" -> ");
-			}
-		}
-		System.out.printf("\ntotal cost %f\n",result.totalCost);
+		return result.path;
+	}
+
+	public double GetCost () {
+		var result = D[getPointArrayIndex(goalPoint.pointInfo.type,goalPoint.pointInfo.Id)];
+		return result.totalCost;
 	}
 
 	Vector<Point> MovablePoint(Point getPoint) {

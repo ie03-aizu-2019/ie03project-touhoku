@@ -13,7 +13,7 @@ public class Main {
 		var pointNum = scanner.nextInt();
 		var lineNum = scanner.nextInt();
 		var P = scanner.nextFloat();
-		var q = scanner.nextFloat();
+		var dijkstra = scanner.nextFloat();
 
 		var points = new Vector<Point>();
 		for (var n = 0; n < pointNum; n++) {
@@ -64,9 +64,59 @@ public class Main {
 		crossPointGroup.Sort();
 		crossPointGroup.AddMovableCrossPoint();
 
-		var dij = new Dijkstra(crossPoints.get(0), crossPoints.get(2), points, lines,
-				crossPoints);
+		for (int d = 0; d < dijkstra; d++) {
+			var startString = scanner.next();
+			var goalString = scanner.next();
+			var number = scanner.nextInt();
 
+			Point start;
+			if (startString.charAt(0) == 'C') {
+				var split = startString.split("C");
+				var index = Integer.parseInt(split[1]) - 1;
+				if (index < crossPoints.size()) {
+					start = crossPoints.get(index);
+				} else {
+					start = null;
+				}
+			} else {
+				start = points.get(Integer.parseInt(startString) - 1);
+			}
+			Point goal = null;
+			if (goalString.charAt(0) == 'C') {
+				var split = goalString.split("C");
+				var index = Integer.parseInt(split[1]) - 1;
+				if (index < crossPoints.size()) {
+					goal = crossPoints.get(index);
+				} else {
+					goal = null;
+				}
+			} else {
+				goal = points.get(Integer.parseInt(goalString) - 1);
+			}
+
+
+			if (start == null || goal == null) {
+				System.out.printf("NaN\n");
+			} else {
+				var dij = new Dijkstra(start, goal, points, lines, crossPoints);
+
+				//output
+				var path = dij.GetPath();
+				/*for (int i=0;i<path.size();i++) {
+					if (path.get(i).pointInfo.type == e_PointType.Point) {
+						System.out.printf("Point ");
+					}else {
+						System.out.printf("Cross Point ");
+					}
+					System.out.printf("%d ", path.get(i).pointInfo.Id);
+					if (i < path.size()-1) {
+						System.out.printf(" -> ");
+					}
+				}*/
+				System.out.printf("%.5f\n",dij.GetCost());
+
+			}
+		}
 
 		scanner.close();
 	}

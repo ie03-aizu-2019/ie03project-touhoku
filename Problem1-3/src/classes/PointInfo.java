@@ -5,8 +5,8 @@ public class PointInfo {
 		Point,CrossPoint,
 	}
 
-	int Id;
-	e_PointType type;
+	public int Id;
+	public e_PointType type;
 
 	public PointInfo(int getId, e_PointType getType) {
 		this.Id = getId;
