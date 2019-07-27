@@ -6,7 +6,6 @@ import classes.CrossPointGroup;
 import classes.Dijkstra;
 import classes.Line;
 import classes.Point;
-import classes.PointInfo.e_PointType;
 
 public class Main {
 	public static void main(String[] args) {
@@ -102,16 +101,20 @@ public class Main {
 				var dij = new Dijkstra(start, goal, points, lines, crossPoints);
 
 				//output
-				System.out.printf("%.5f\n",dij.GetCost());
 				var path = dij.GetPath();
-				for (int i=0;i<path.size();i++) {
-					if (path.get(i).pointInfo.type ==  e_PointType.Point) {
+				/*for (int i=0;i<path.size();i++) {
+					if (path.get(i).pointInfo.type == e_PointType.Point) {
+						System.out.printf("Point ");
 					}else {
-						System.out.printf("C");
+						System.out.printf("Cross Point ");
 					}
-					System.out.printf("%d ", path.get(i).pointInfo.Id+1);
-				}
-				System.out.printf("\n");
+					System.out.printf("%d ", path.get(i).pointInfo.Id);
+					if (i < path.size()-1) {
+						System.out.printf(" -> ");
+					}
+				}*/
+				System.out.printf("%.5f\n",dij.GetCost());
+
 			}
 		}
 
