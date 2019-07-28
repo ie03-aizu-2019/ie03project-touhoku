@@ -1,9 +1,13 @@
 import classes.*;
 import Unit.*;
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.Vector;
 
 public class Main{
+
+    static int[][] line_graph = new int[2000][2000];
+    static int [] color = new int[2000];
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int pointNum = scanner.nextInt();
@@ -79,11 +83,9 @@ public class Main{
             points.add(new Vec(crossPoints.get(n).CrossingVec.x, crossPoints.get(n).CrossingVec.y));
         }
         
-        int[][] line_graph = new int[points.size()][points.size()];
-
         for(int i=0;i<points.size();i++){
             for(int j=0;j<points.size();j++){
-                line_graph[i][j]=0;
+                Main.line_graph[i][j]=0;
             }
         }
 
@@ -93,14 +95,14 @@ public class Main{
                     if(points.get(i).x==lines.get(j).P1.x && points.get(i).y==lines.get(j).P1.y){
                         for(int k=0;k<points.size();k++){
                             if(points.get(k).x==lines.get(j).P2.x && points.get(k).y==lines.get(j).P2.y){
-                             line_graph[i][k]=1;
+                             Main.line_graph[i][k]=1;
                             }
                         }
                     }   
                     else if(points.get(i).x==lines.get(j).P2.x && points.get(i).y==lines.get(j).P2.y){
                         for(int k=0;k<points.size();k++){
                             if(points.get(k).x==lines.get(j).P1.x && points.get(k).y==lines.get(j).P1.y){
-                              line_graph[i][k]=1;
+                              Main.line_graph[i][k]=1;
                             }   
                         }
                     }
@@ -110,18 +112,16 @@ public class Main{
 
         for(int i=0;i<points.size();i++){
             for(int j=0;j<points.size();j++){
-                if(line_graph[i][j]==1){
+                if(Main.line_graph[i][j]==1){
                     for(int k=j+1;k<points.size();k++){
-                        if(line_graph[i][k]==1 && line_graph[j][k]==1 && line_graph[k][j]==1){
+                        if(Main.line_graph[i][k]==1 && Main.line_graph[j][k]==1 && Main.line_graph[k][j]==1){
                             if(line_a(points.get(i),points.get(j),points.get(k))==true && line_b(points.get(i),points.get(j),points.get(k))==true) {
-                                System.out.printf("i:%d,j%d:k:%d\n",i+1,j+1,k+1);
-                                //continue;
                                 if(dis(points.get(i),points.get(j)) < dis(points.get(i),points.get(k))){
-                                    line_graph[i][k]=0;
+                                    Main.line_graph[i][k]=0;
                                 }
 
                                 else if(dis(points.get(i),points.get(j)) > dis(points.get(i),points.get(k))){
-                                    line_graph[i][j]=0;
+                                    Main.line_graph[i][j]=0;
                                 }
                             }
                         }
@@ -130,16 +130,23 @@ public class Main{
             }
         }
 
+        //Search
         for(int i=0;i<points.size();i++){
             for(int j=0;j<points.size();j++){
-                System.out.printf("%d ",line_graph[i][j]);
-                //if(line_graph[i][j]==1){
-                    //System.out.printf("line true:%d-%d 0\n",i+1,j+1);
-                //}
-                //else System.out.printf("line false:%d-%d x\n",i+1,j+1);
+                if(Main.line_graph[i][j]==1){
+                    Main.line_graph[i][j]=0;
+                    Main.line_graph[j][i]=0;
+                    assignColor(points.size());
+                    if(Main.color[i]==Main.color[j]){
+                        //System.out.printf("%d-%d line no target line\n",i+1,j+1);
+                    }
+                    else System.out.printf("%d-%d line target line\n",i+1,j+1);
+                    Main.line_graph[i][j]=1;
+                    Main.line_graph[j][i]=1;
+                }
             }
-            System.out.printf("\n");
         }
+
         scanner.close();
     }
 
@@ -151,10 +158,8 @@ public class Main{
         double a1,a2;
         a1=(goal1.y-start.y)/(goal1.x-start.x);
         a2=(goal2.y-start.y)/(goal2.x-start.x);
-        System.out.printf("a1:%f, a2:%f\n", a1,a2);
 
-        if(Double.compare(a1, a2)==0) {
-            System.out.printf("true\n");
+        if(Math.abs(a1-a2)<0.00001) {
             return true;
         }
 
@@ -165,10 +170,39 @@ public class Main{
         double b1,b2;
         b1=start.y-((goal1.y-start.y)/(goal1.x-start.x))*start.x;
         b2=start.y-((goal2.y-start.y)/(goal2.x-start.x))*start.x;
-        System.out.printf("b1:%d, b2:%d\n", b1,b2);
 
-        if(Double.compare(b1,b2)==0) return true;
+        if(Math.abs(b1-b2)<0.00001) return true;
         return false;
     }
 
+    public static void assignColor(int n) {
+        int id=1;
+        for(int i=0;i<n;i++){
+            Main.color[i]=-1;
+        }   
+        for(int u=0;u<n;u++){
+            if(Main.color[u]==-1) dfs(u,id++,n);
+        }
+    }
+
+    public static void dfs(int r, int c, int n){
+        Vector<Integer> stack =new Vector<Integer>();
+        stack.add(r);
+        Main.color[r]=c;
+        while(stack.isEmpty()!=true){
+            int u=stack.get(stack.size()-1);
+            stack.remove(stack.size()-1);
+            for(int i=0;i<n;i++){
+                if(Main.line_graph[u][i]==1){
+                    int v=i;
+
+                    if(Main.color[v] == -1){
+                        Main.color[v]=c;
+                        stack.add(v);
+                    }
+                }
+            }
+
+        }
+    }
 }
