@@ -29,19 +29,18 @@ public class CrossPoint{
   }
 
 
-  public boolean Judje_cross(){
+  public int Judje_cross(){
     //exception
-    if (CrossingVec.Eq(CrossingVec, line1.P1) || CrossingVec.Eq(CrossingVec, line1.P2) 
-    || CrossingVec.Eq(CrossingVec, line2.P1) || CrossingVec.Eq(CrossingVec, line2.P2)) {
-      return false;
-    }
-
       if(0<=s && s<=1){
         if(0<=t && t<=1){
-          return true;
+          if (CrossingVec.Eq(CrossingVec, line1.P1) || CrossingVec.Eq(CrossingVec, line1.P2) 
+            || CrossingVec.Eq(CrossingVec, line2.P1) || CrossingVec.Eq(CrossingVec, line2.P2)) {
+            return 2;
+          }
+          return 1;
         }
       }
-      return false;
+      return 0;
   }
 
   public void Point_calc(){

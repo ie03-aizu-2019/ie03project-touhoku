@@ -40,7 +40,7 @@ public class Main{
         for(int n=0;n<crossPoints.size();n++){
             crossPoints.get(n).Ask_for_a();
             crossPoints.get(n).Point_calc();
-            if (crossPoints.get(n).Judje_cross()==true){
+            if (crossPoints.get(n).Judje_cross()==1){
                 for(int i=0;i<lines.size();i++){
                     if(lines.get(i).equals(crossPoints.get(n).line1)){
                         lines.add(new Line(lines.get(i).P1, crossPoints.get(n).CrossingVec));
@@ -54,12 +54,31 @@ public class Main{
                     }      
                 }
             }
+
+            else if(crossPoints.get(n).Judje_cross()==2){
+                if (crossPoints.get(n).CrossingVec.Eq(crossPoints.get(n).line1.P1, crossPoints.get(n).CrossingVec)){
+                    lines.add(new Line(crossPoints.get(n).line1.P1, crossPoints.get(n).line2.P1));
+                    lines.add(new Line(crossPoints.get(n).line1.P1, crossPoints.get(n).line2.P2));
+                }
+                else if (crossPoints.get(n).CrossingVec.Eq(crossPoints.get(n).line1.P2, crossPoints.get(n).CrossingVec)) {
+                    lines.add(new Line(crossPoints.get(n).line1.P2, crossPoints.get(n).line2.P1));
+                    lines.add(new Line(crossPoints.get(n).line1.P2, crossPoints.get(n).line2.P2));
+                }
+                else if (crossPoints.get(n).CrossingVec.Eq(crossPoints.get(n).line2.P1, crossPoints.get(n).CrossingVec)) {
+                    lines.add(new Line(crossPoints.get(n).line2.P1, crossPoints.get(n).line1.P1));
+                    lines.add(new Line(crossPoints.get(n).line2.P1, crossPoints.get(n).line1.P2));
+                }
+                else if(crossPoints.get(n).CrossingVec.Eq(crossPoints.get(n).line2.P1, crossPoints.get(n).CrossingVec)) {
+                    lines.add(new Line(crossPoints.get(n).line2.P2, crossPoints.get(n).line1.P1));
+                    lines.add(new Line(crossPoints.get(n).line2.P2, crossPoints.get(n).line1.P2));
+                }
+  
+            }
         }
 
         for(int i=0;i<crossPoints.size();i++){
-            if (crossPoints.get(i).Judje_cross()==true){
                 for(int j=0;j<crossPoints.size();j++){
-                    if (crossPoints.get(j).Judje_cross()==true){
+                   if (crossPoints.get(j).Judje_cross()==1){
                         if(i==j)continue;
                         if(crossPoints.get(i).line1.equals(crossPoints.get(j).line1)){
                             lines.add(new Line(crossPoints.get(i).CrossingVec, crossPoints.get(j).CrossingVec));
@@ -75,12 +94,13 @@ public class Main{
                         }
                     }
                }    
-            }
         }
 
+
         for(int n=0;n<crossPoints.size();n++){
-            if(crossPoints.get(n).Judje_cross())
-            points.add(new Vec(crossPoints.get(n).CrossingVec.x, crossPoints.get(n).CrossingVec.y));
+            if(crossPoints.get(n).Judje_cross()==1){
+               points.add(new Vec(crossPoints.get(n).CrossingVec.x, crossPoints.get(n).CrossingVec.y));
+            }
         }
         
         for(int i=0;i<points.size();i++){
@@ -94,6 +114,7 @@ public class Main{
                 if(lines.get(j).linestate==true){
                     if(points.get(i).x==lines.get(j).P1.x && points.get(i).y==lines.get(j).P1.y){
                         for(int k=0;k<points.size();k++){
+                            if(i==k)continue;
                             if(points.get(k).x==lines.get(j).P2.x && points.get(k).y==lines.get(j).P2.y){
                              Main.line_graph[i][k]=1;
                             }
@@ -101,6 +122,7 @@ public class Main{
                     }   
                     else if(points.get(i).x==lines.get(j).P2.x && points.get(i).y==lines.get(j).P2.y){
                         for(int k=0;k<points.size();k++){
+                            if(i==k)continue;
                             if(points.get(k).x==lines.get(j).P1.x && points.get(k).y==lines.get(j).P1.y){
                               Main.line_graph[i][k]=1;
                             }   
@@ -131,20 +153,47 @@ public class Main{
         }
 
         //Search
+        int ci,cj;
         for(int i=0;i<points.size();i++){
-            for(int j=0;j<points.size();j++){
+            for(int j=i+1;j<points.size();j++){
+                ci=0;
+                cj=0;
                 if(Main.line_graph[i][j]==1){
                     Main.line_graph[i][j]=0;
                     Main.line_graph[j][i]=0;
                     assignColor(points.size());
-                    if(Main.color[i]==Main.color[j]){
-                        //System.out.printf("%d-%d line no target line\n",i+1,j+1);
+                    if(Main.color[i]!=Main.color[j]){
+                        if(i+1>pointNum) {
+                            ci=i+1-pointNum;
+                            if(j+1>pointNum){
+                                cj=j+1-pointNum;
+                                System.out.printf("C%d-C%d line target line\n",ci,cj);
+                            }
+                            else {
+                                System.out.printf("C%d-%d line target line\n",ci,j+1);
+                            }
+                        }
+                        else{
+                            if(j+1>pointNum){
+                                cj=j+1-pointNum;
+                                System.out.printf("%d-C%d line target line\n",i+1,cj);
+                            }
+                            else {
+                                System.out.printf("%d-%d line target line\n",i+1,j+1);
+                            }
+                        }
                     }
-                    else System.out.printf("%d-%d line target line\n",i+1,j+1);
                     Main.line_graph[i][j]=1;
                     Main.line_graph[j][i]=1;
                 }
             }
+        }
+
+        for(int i=0;i<points.size();i++){
+            for(int j=0;j<points.size();j++){
+                System.out.printf("%d ", Main.line_graph[i][j]);
+            }
+            System.out.printf("\n");
         }
 
         scanner.close();
