@@ -1,8 +1,8 @@
 package classes;
 
 public class Line{
-  Point P1;
-  Point P2;
+ public Point P1;
+  public Point P2;
 public  double a; //y=ax+b;
   public double b;
   public double r_a;//法線の傾き

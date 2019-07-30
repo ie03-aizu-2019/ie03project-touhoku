@@ -1,5 +1,7 @@
 
 //上のクラスはテストケース用に作成
+import classes.*;
+
 import java.util.Scanner;
 public class Main{
   public static void main(String args[]){
@@ -23,7 +25,13 @@ public class Main{
        y1=scanner.nextDouble();
       points[i] = new Point(x1, y1);
     }
-
+    for(i=0;i<lineNum;i++){
+     lines[i]=new Line(points[scanner.nextInt()-1],points[scanner.nextInt()-1]);
+     method_road(lines[i]);
+    }
+    for(i=0;i<newpointsnum;i++){
+     newpoints[i]=new NewPoint(scanner.nextDouble(),scanner.nextDouble());
+    }
 
 
 /*
@@ -33,7 +41,7 @@ public class Main{
         method_road(lines[k]);//道の関数まで調べてる
         k++;
         }
-      }
+      }*/
     for(i=0;i<newpoints.length;i++){
       for(j=0;j<lines.length;j++){
         //System.out.println(dis(lines[j],newpoints[i])+ " "+lines[j].tag);
@@ -47,29 +55,39 @@ public class Main{
       //System.out.println(tmp);
       //System.out.println(lines[tmp].tag);//タグ番号でどこと繋いだか識別　0..新点と道　1...新点とP1 2...新点とP2
       //System.out.println(lines[tmp].min);
-      //ここから続き　まああとは道と点の場合の法線を求めて交差地点出すだけ；
     if(lines[tmp].tag==0){
         double r_b;//法線のb r_aは出してる
         double cx,cy;//交差地点検出
          r_b=newpoints[i].y-(lines[tmp].r_a*newpoints[i].x);
-
          //System.out.println(lines[tmp].a+" "+lines[tmp].b +" "+r_b);//a,b,r_a,r_b ok
          //法線と元の式を使って道をつなぐ交点をだす
          cx=(r_b-lines[tmp].b)/(lines[tmp].a-lines[tmp].r_a);
          cy=lines[tmp].a*cx+lines[tmp].b;
-        tmp=0;
-        min=0;
-        System.out.println(cx + " "+cy);
+
+        System.out.println(lines[tmp].tag+" "+cx + " "+cy);
 
       }
-    }*/
+      if (lines[tmp].tag==1){
+
+      System.out.println(lines[tmp].tag+" "+lines[tmp].P1.x+" "+lines[tmp].P1.y);
+
+      }
+     if (lines[tmp].tag==2){
+        System.out.println(lines[tmp].tag+" "+lines[tmp].P2.x+" "+lines[tmp].P2.y);
+
+
+      }
+      tmp=0;
+      min=0;
+
+    }
   }
 
 
 //まず道の関数を求める(テスト用)
 
 
-/*
+
 public static void method_road(Line L1){
   L1.a=(L1.P2.y-L1.P1.y)/(L1.P2.x-L1.P1.x);
   L1.b=L1.P2.y-(L1.P2.x*L1.a);
@@ -84,7 +102,9 @@ public static void method_road(Line L1){
 
 public static double dis(Line L1,NewPoint A){
   double dis_road,dis_p1,dis_p2;
-   L1.r_a=-1*(1/L1.a);
+  if(L1.a==0) L1.r_a=0;
+  else L1.r_a=-1*(1/L1.a);
+
   double r_b_P1,r_b_P2;
   double judge_y1,judge_y2;
   //法線を求める
@@ -133,5 +153,5 @@ public static double dis(Line L1,NewPoint A){
     }
   }
   return 500;
-}*/
+}
 }
