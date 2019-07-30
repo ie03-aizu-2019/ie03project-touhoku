@@ -31,4 +31,8 @@ public class Vec {
 			return null;
 		}
 	}
+
+	public static Double Distance (Vec a,Vec b) {
+		return Math.sqrt(Math.pow(a.x-b.x, 2)+Math.pow(a.y-b.y, 2));
+	}
 }
