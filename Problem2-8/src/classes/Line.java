@@ -9,6 +9,6 @@ public class Line {
     public Line (Vec P1, Vec P2) {
         this.P1 = P1;
         this.P2 = P2;
-        this.linestate = true;
+        linestate=true;
     }
 }
