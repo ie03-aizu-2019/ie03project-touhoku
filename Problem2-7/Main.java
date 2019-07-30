@@ -1,7 +1,6 @@
 
 //上のクラスはテストケース用に作成
 import java.util.Scanner;
-import classes.*;
 public class Main{
   public static void main(String args[]){
     Scanner scanner = new Scanner(System.in);
@@ -22,9 +21,7 @@ public class Main{
     for(i=0;i<pointNum;i++){
       x1=scanner.nextDouble();
        y1=scanner.nextDouble();
-      points[i].x=x1;
-      points[i].y=y1;
-
+      points[i] = new Point(x1, y1);
     }
 
 
