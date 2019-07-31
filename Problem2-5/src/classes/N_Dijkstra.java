@@ -22,6 +22,20 @@ public class N_Dijkstra {
 		A.add(new Dijkstra(startPoint, goalPoint, points, lines, cPoints, null));
 
 		int n_shortest = 2;
+		//debug
+		if (n_shortest==1) {
+			var debugPath = A.get(0).GetPath();
+			var debugCost = A.get(0).GetCost();
+			for (int d = 0; d < debugPath.size(); d++) {
+				if (debugPath.get(d).pointInfo.type != e_PointType.Point) {
+					System.out.printf("C");
+				}
+				System.out.printf("%d ", debugPath.get(d).pointInfo.Id);
+			}
+			System.out.printf(" %f", debugCost);
+			System.out.printf("\n");
+		}
+
 		for (int n = 1; n < n_shortest; n++) {
 			for (int p = 0; p < A.get(n - 1).GetPath().size() - 1; p++) {
 				var ex_path = A.get(n - 1).GetPath();

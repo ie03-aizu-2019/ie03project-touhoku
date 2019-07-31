@@ -6,6 +6,7 @@ import classes.CrossPointGroup;
 import classes.Dijkstra;
 import classes.Line;
 import classes.Point;
+import classes.PointInfo.e_PointType;
 
 public class Main {
 	public static void main(String[] args) {
@@ -102,8 +103,8 @@ public class Main {
 
 				//output
 				var path = dij.GetPath();
-				/*for (int i=0;i<path.size();i++) {
-					if (path.get(i).pointInfo.type == e_PointType.Point) {
+				for (int i=0;i<path.size();i++) {
+					if (path.get(i).pointInfo.type ==  e_PointType.Point ) {
 						System.out.printf("Point ");
 					}else {
 						System.out.printf("Cross Point ");
@@ -112,7 +113,7 @@ public class Main {
 					if (i < path.size()-1) {
 						System.out.printf(" -> ");
 					}
-				}*/
+				}
 				System.out.printf("%.5f\n",dij.GetCost());
 
 			}

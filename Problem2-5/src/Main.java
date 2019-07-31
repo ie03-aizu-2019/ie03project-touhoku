@@ -49,7 +49,7 @@ public class Main {
 				n++;
 			}
 		}
-		//ダブったInvCPを消去
+		// ダブったInvCPを消去
 		for (int n = 0; n < crossPoints.size(); n++) {
 			for (int m = n + 1; m < crossPoints.size();) {
 				if (crossPoints.get(n).pointInfo.type == e_PointType.InvisibleCP
@@ -64,7 +64,7 @@ public class Main {
 				}
 			}
 		}
-		//InvCPは最後尾へ
+		// InvCPは最後尾へ
 		for (int i = 0; i < crossPoints.size();) {
 			if (crossPoints.get(i).pointInfo.type == e_PointType.InvisibleCP) {
 				boolean end = true;
@@ -84,7 +84,7 @@ public class Main {
 			}
 		}
 
-		//Cross PointをLineに入れ込む
+		// Cross PointをLineに入れ込む
 		for (int n = 0; n < crossPoints.size(); n++) {
 			if (crossPoints.get(n).pointInfo.type == e_PointType.CrossPoint) {
 				for (int l = 0; l < lines.size(); l++) {
@@ -126,7 +126,7 @@ public class Main {
 			if (startString.charAt(0) == 'C') {
 				var split = startString.split("C");
 				var index = Integer.parseInt(split[1]) - 1;
-				if (index < crossPoints.size() || crossPoints.get(index).pointInfo.type == e_PointType.InvisibleCP) {
+				if (index < crossPoints.size() && crossPoints.get(index).pointInfo.type != e_PointType.InvisibleCP) {
 					start = crossPoints.get(index);
 				} else {
 					start = null;
@@ -138,7 +138,7 @@ public class Main {
 			if (goalString.charAt(0) == 'C') {
 				var split = goalString.split("C");
 				var index = Integer.parseInt(split[1]) - 1;
-				if (index < crossPoints.size() || crossPoints.get(index).pointInfo.type == e_PointType.InvisibleCP) {
+				if (index < crossPoints.size() && crossPoints.get(index).pointInfo.type != e_PointType.InvisibleCP) {
 					goal = crossPoints.get(index);
 				} else {
 					goal = null;
@@ -147,25 +147,27 @@ public class Main {
 				goal = points.get(Integer.parseInt(goalString) - 1);
 			}
 
+			for (int cp = 0; cp < crossPoints.size(); cp++) {
+				if (crossPoints.get(cp).pointInfo.type == e_PointType.CrossPoint) {
+					System.out.printf("C%d %f , %f\n", cp, crossPoints.get(cp).xyVec.x, crossPoints.get(cp).xyVec.y);
+				}
+			}
+
 			if (start == null || goal == null) {
 				System.out.printf("NaN\n");
 			} else {
 				var dij = new N_Dijkstra(start, goal, points, lines, crossPoints);
 
-				//output
-				//var path = dij.GetPath();
-				/*for (int i=0;i<path.size();i++) {
-					if (path.get(i).pointInfo.type == e_PointType.Point) {
-						System.out.printf("Point ");
-					}else {
-						System.out.printf("Cross Point ");
-					}
-					System.out.printf("%d ", path.get(i).pointInfo.Id);
-					if (i < path.size()-1) {
-						System.out.printf(" -> ");
-					}
-				}*/
-				//System.out.printf("%.5f\n",dij.GetCost());
+				// output
+				// var path = dij.GetPath();
+				/*
+				 * for (int i=0;i<path.size();i++) { if (path.get(i).pointInfo.type ==
+				 * e_PointType.Point) { System.out.printf("Point "); }else {
+				 * System.out.printf("Cross Point "); } System.out.printf("%d ",
+				 * path.get(i).pointInfo.Id); if (i < path.size()-1) {
+				 * System.out.printf(" -> "); } }
+				 */
+				// System.out.printf("%.5f\n",dij.GetCost());
 
 			}
 		}
