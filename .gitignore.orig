@@ -1,0 +1,7 @@
+*.class
+<<<<<<< HEAD
+.metadata/*
+*/.metadata/*
+=======
+>>>>>>> origin/feature/2-7/main
+/.metadata/
