@@ -3,6 +3,7 @@ package classes;
 public class Vec {
     public double x;
     public double y;
+
     public Vec (double x, double y) {
         this.x = x;
         this.y = y;
@@ -13,11 +14,25 @@ public class Vec {
     public Vec Add(Vec a, Vec b) {
         return  new Vec(a.x+b.x, a.y+b.y);
     }
-    public Vec Sub(Vec a, Vec b) {
+    public static Vec Sub(Vec a, Vec b) {
         return  new Vec(a.x-b.x, a.y-b.y);
     }
 
-    public boolean Eq (Vec a, Vec b) {
+    public static boolean Eq (Vec a, Vec b) {
         return a.x==b.x && a.y == b.y;
     }
+
+	public static Double CalLength(Vec a, Vec b) {
+		Double x = a.x/b.x;
+		Double y = a.y/b.y;
+		if (Math.abs(x-y) < 0.0000001) {
+			return x;
+		}else {
+			return null;
+		}
+	}
+
+	public static Double Distance (Vec a,Vec b) {
+		return Math.sqrt(Math.pow(a.x-b.x, 2)+Math.pow(a.y-b.y, 2));
+	}
 }
